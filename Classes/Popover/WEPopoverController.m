@@ -179,14 +179,20 @@
 	[self.view becomeFirstResponder];
 	popoverVisible = YES;
 	if (animated) {
-		self.view.alpha = 0.0;
+		CGRect originalFrame = self.view.frame;
+		self.view.frame = CGRectMake(originalFrame.origin.x,
+									 -originalFrame.size.height,
+									 originalFrame.size.width,
+									 originalFrame.size.height);
+//		self.view.alpha = 0.0;
         
         [UIView animateWithDuration:FADE_DURATION
                               delay:0.0
                             options:UIViewAnimationCurveLinear
                          animations:^{
                              
-                             self.view.alpha = 1.0;
+							 self.view.frame = originalFrame;
+//                             self.view.alpha = 1.0;
                              
                          } completion:^(BOOL finished) {
                              
@@ -311,8 +317,12 @@
                                   delay:0.0
                                 options:UIViewAnimationCurveLinear
                              animations:^{
-                                 
-                                 self.view.alpha = 0.0;
+								 CGRect originalFrame = self.view.frame;
+								 self.view.frame = CGRectMake(originalFrame.origin.x,
+															  -originalFrame.size.height,
+															  originalFrame.size.width,
+															  originalFrame.size.height);
+//                                 self.view.alpha = 0.0;
                                  
                              } completion:^(BOOL finished) {
                                  
