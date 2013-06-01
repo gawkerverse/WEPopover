@@ -46,12 +46,24 @@
 - (id)initWithContentViewController:(UIViewController *)viewController {
 	if ((self = [self init])) {
 		self.contentViewController = viewController;
+        
+        [self.contentViewController addObserver:self forKeyPath:@"contentSizeForViewInPopover" options:0 context:nil];
 	}
 	return self;
 }
 
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == self.contentViewController && [keyPath isEqualToString:@"contentSizeForViewInPopover"]) {
+        CGSize newPopoverContentSize = [self.contentViewController contentSizeForViewInPopover];
+        if (!CGSizeEqualToSize(CGSizeZero, popoverContentSize) && !(CGSizeEqualToSize(popoverContentSize, newPopoverContentSize))) {
+            popoverContentSize = newPopoverContentSize;
+        }
+    }
+}
+
 - (void)dealloc {
 	[self dismissPopoverAnimated:NO];
+    [contentViewController removeObserver:self forKeyPath:@"contentSizeForViewInPopover"];
 	[contentViewController release];
 	[containerViewProperties release];
 	[passthroughViews release];
@@ -61,9 +73,11 @@
 
 - (void)setContentViewController:(UIViewController *)vc {
 	if (vc != contentViewController) {
+        [contentViewController removeObserver:self forKeyPath:@"contentSizeForViewInPopover"];
 		[contentViewController release];
 		contentViewController = [vc retain];
 		popoverContentSize = CGSizeZero;
+        [self.contentViewController addObserver:self forKeyPath:@"contentSizeForViewInPopover" options:0 context:nil];
 	}
 }
 
