@@ -46,8 +46,6 @@
 - (id)initWithContentViewController:(UIViewController *)viewController {
 	if ((self = [self init])) {
 		self.contentViewController = viewController;
-        
-        [self.contentViewController addObserver:self forKeyPath:@"contentSizeForViewInPopover" options:0 context:nil];
 	}
 	return self;
 }
