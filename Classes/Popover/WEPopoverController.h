@@ -72,4 +72,6 @@
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                          animated:(BOOL)animated;
 
++ (Class)containerViewClass;
+
 @end

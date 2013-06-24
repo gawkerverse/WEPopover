@@ -26,7 +26,6 @@
 
 @interface WEPopoverContainerView(Private)
 
-- (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
 - (CGRect)contentRect;
 - (CGSize)contentSize;
 - (void)setProperties:(WEPopoverContainerViewProperties *)props;
@@ -115,43 +114,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	}
 }
 
-
-
-@end
-
-@implementation WEPopoverContainerView(Private)
-
-- (void)initFrame {
-	CGRect theFrame = CGRectOffset(CGRectUnion(bgRect, arrowRect), offset.x, offset.y);
-	
-	//If arrow rect origin is < 0 the frame above is extended to include it so we should offset the other rects
-	arrowOffset = CGPointMake(MAX(0, -arrowRect.origin.x), MAX(0, -arrowRect.origin.y));
-	bgRect = CGRectOffset(bgRect, arrowOffset.x, arrowOffset.y);
-	arrowRect = CGRectOffset(arrowRect, arrowOffset.x, arrowOffset.y);
-	    
-    self.frame = CGRectIntegral(theFrame);
-}																		 
-
-- (CGSize)contentSize {
-	return self.contentRect.size;
-}
-
-- (CGRect)contentRect {
-	CGRect rect = CGRectMake(properties.leftBgMargin + properties.leftContentMargin + arrowOffset.x, 
-							 properties.topBgMargin + properties.topContentMargin + arrowOffset.y, 
-							 bgRect.size.width - properties.leftBgMargin - properties.rightBgMargin - properties.leftContentMargin - properties.rightContentMargin,
-							 bgRect.size.height - properties.topBgMargin - properties.bottomBgMargin - properties.topContentMargin - properties.bottomContentMargin);
-	return rect;
-}
-
-- (void)setProperties:(WEPopoverContainerViewProperties *)props {
-	if (properties != props) {
-		[properties release];
-		properties = [props retain];
-	}
-}
-
-- (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)supportedArrowDirections {	
+- (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)supportedArrowDirections {
 	
 	//Determine the frame, it should not go outside the display area
 	UIPopoverArrowDirection theArrowDirection = UIPopoverArrowDirectionUp;
@@ -284,9 +247,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			CGRect bgFrame = CGRectOffset(theBgRect, theOffset.x, theOffset.y);
 			
 			CGFloat minMarginLeft = CGRectGetMinX(bgFrame);
-			CGFloat minMarginRight = CGRectGetWidth(displayArea) - CGRectGetMaxX(bgFrame); 
-			CGFloat minMarginTop = CGRectGetMinY(bgFrame); 
-			CGFloat minMarginBottom = CGRectGetHeight(displayArea) - CGRectGetMaxY(bgFrame); 
+			CGFloat minMarginRight = CGRectGetWidth(displayArea) - CGRectGetMaxX(bgFrame);
+			CGFloat minMarginTop = CGRectGetMinY(bgFrame);
+			CGFloat minMarginBottom = CGRectGetHeight(displayArea) - CGRectGetMaxY(bgFrame);
 			
 			if (minMarginLeft < 0) {
 			    // Popover is too wide and clipped on the left; decrease width
@@ -361,6 +324,40 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			break;
         default:
             break;
+	}
+}
+
+@end
+
+@implementation WEPopoverContainerView(Private)
+
+- (void)initFrame {
+	CGRect theFrame = CGRectOffset(CGRectUnion(bgRect, arrowRect), offset.x, offset.y);
+	
+	//If arrow rect origin is < 0 the frame above is extended to include it so we should offset the other rects
+	arrowOffset = CGPointMake(MAX(0, -arrowRect.origin.x), MAX(0, -arrowRect.origin.y));
+	bgRect = CGRectOffset(bgRect, arrowOffset.x, arrowOffset.y);
+	arrowRect = CGRectOffset(arrowRect, arrowOffset.x, arrowOffset.y);
+	    
+    self.frame = CGRectIntegral(theFrame);
+}																		 
+
+- (CGSize)contentSize {
+	return self.contentRect.size;
+}
+
+- (CGRect)contentRect {
+	CGRect rect = CGRectMake(properties.leftBgMargin + properties.leftContentMargin + arrowOffset.x, 
+							 properties.topBgMargin + properties.topContentMargin + arrowOffset.y, 
+							 bgRect.size.width - properties.leftBgMargin - properties.rightBgMargin - properties.leftContentMargin - properties.rightContentMargin,
+							 bgRect.size.height - properties.topBgMargin - properties.bottomBgMargin - properties.topContentMargin - properties.bottomContentMargin);
+	return rect;
+}
+
+- (void)setProperties:(WEPopoverContainerViewProperties *)props {
+	if (properties != props) {
+		[properties release];
+		properties = [props retain];
 	}
 }
 
