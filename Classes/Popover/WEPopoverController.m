@@ -51,8 +51,8 @@
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == self.contentViewController && [keyPath isEqualToString:@"contentSizeForViewInPopover"]) {
-        CGSize newPopoverContentSize = [self.contentViewController contentSizeForViewInPopover];
+    if (object == self.contentViewController && [keyPath isEqualToString:@"preferredContentSize"]) {
+        CGSize newPopoverContentSize = [self.contentViewController preferredContentSize];
         if (!CGSizeEqualToSize(CGSizeZero, popoverContentSize) && !(CGSizeEqualToSize(popoverContentSize, newPopoverContentSize))) {
             popoverContentSize = newPopoverContentSize;
         }
@@ -61,7 +61,7 @@
 
 - (void)dealloc {
 	[self dismissPopoverAnimated:NO];
-    [contentViewController removeObserver:self forKeyPath:@"contentSizeForViewInPopover"];
+    [contentViewController removeObserver:self forKeyPath:@"preferredContentSize"];
 	[contentViewController release];
 	[containerViewProperties release];
 	[passthroughViews release];
@@ -71,11 +71,11 @@
 
 - (void)setContentViewController:(UIViewController *)vc {
 	if (vc != contentViewController) {
-        [contentViewController removeObserver:self forKeyPath:@"contentSizeForViewInPopover"];
+        [contentViewController removeObserver:self forKeyPath:@"preferredContentSize"];
 		[contentViewController release];
 		contentViewController = [vc retain];
 		popoverContentSize = CGSizeZero;
-        [self.contentViewController addObserver:self forKeyPath:@"contentSizeForViewInPopover" options:0 context:nil];
+        [self.contentViewController addObserver:self forKeyPath:@"preferredContentSize" options:0 context:nil];
 	}
 }
 
@@ -150,7 +150,7 @@
 	[contentViewController view];
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
-		popoverContentSize = contentViewController.contentSizeForViewInPopover;
+		popoverContentSize = contentViewController.preferredContentSize;
 	}
 	
 	CGRect displayArea = [self displayAreaForView:theView];
@@ -200,7 +200,7 @@
         
         [UIView animateWithDuration:FADE_DURATION
                               delay:0.0
-                            options:UIViewAnimationCurveLinear
+                            options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              
 							 self.view.frame = originalFrame;
@@ -241,7 +241,7 @@
     }
     
     if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
-		popoverContentSize = contentViewController.contentSizeForViewInPopover;
+		popoverContentSize = contentViewController.preferredContentSize;
 	}
 	
 	CGRect displayArea = [self displayAreaForView:theView];
@@ -331,7 +331,7 @@
             
             [UIView animateWithDuration:FADE_DURATION
                                   delay:0.0
-                                options:UIViewAnimationCurveLinear
+                                options:UIViewAnimationOptionCurveLinear
                              animations:^{
 								 CGRect originalFrame = self.view.frame;
 								 self.view.frame = CGRectMake(originalFrame.origin.x,

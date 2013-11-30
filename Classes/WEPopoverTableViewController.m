@@ -73,14 +73,6 @@
 }
 
 
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-	[self.popoverController dismissPopoverAnimated:NO];
-	self.popoverController = nil;
-	[super viewDidUnload];
-}
-
 #pragma mark -
 #pragma mark Table view data source
 
@@ -283,6 +275,8 @@
 }
 
 - (void)dealloc {
+    [self.popoverController dismissPopoverAnimated:NO];
+    self.popoverController = nil;
     [super dealloc];
 }
 
